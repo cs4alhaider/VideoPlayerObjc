@@ -17,7 +17,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    [self play];
+    //[self play];
+    [self playOptionTwo];
 }
 
 /**
@@ -27,11 +28,13 @@
     
     NSString *filepath = [[NSBundle mainBundle]
                           pathForResource:@"testVid"
-                          ofType:@"mp4" inDirectory:nil];
+                          ofType:@"mp4"
+                          inDirectory:nil];
     
     NSURL *fileURL = [NSURL fileURLWithPath:filepath];
     
     AVPlayer *player = [AVPlayer playerWithURL:fileURL];
+    player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
     AVPlayerViewController *playerController = AVPlayerViewController.new;
     
     [self presentViewController:playerController animated:YES completion:^{
@@ -46,6 +49,25 @@
     
     [playerController.player play];
     [self loopVideo:player];
+}
+
+- (void) playOptionTwo {
+    NSString *filepath = [[NSBundle mainBundle]
+                          pathForResource:@"testVid"
+                          ofType:@"mp4"
+                          inDirectory:nil];
+    
+    NSURL *fileURL = [NSURL fileURLWithPath:filepath];
+    self.avPlayer = [AVPlayer playerWithURL:fileURL];
+    self.avPlayer.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+    
+    AVPlayerLayer *videoLayer = [AVPlayerLayer playerLayerWithPlayer:self.avPlayer];
+    videoLayer.frame = self.view.bounds;
+    videoLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    [self.view.layer addSublayer:videoLayer];
+    
+    [self.avPlayer play];
+    [self loopVideo:self.avPlayer];
 }
 
 /**
